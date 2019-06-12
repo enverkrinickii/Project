@@ -29,10 +29,14 @@ namespace Project.Models
 
         public virtual ICollection<Picture> Pictures { get; set; }
 
+        public virtual ICollection<ApplicationUser> Users { get; set; }
+
+
         public Sight()
         {
             Tags = new List<Tag>();
             Pictures = new List<Picture>();
+            Users = new List<ApplicationUser>();
         }
     }
 }

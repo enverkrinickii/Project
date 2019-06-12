@@ -22,10 +22,16 @@ namespace Project.Models
 
         public virtual ICollection<ChatRoom> ChatRooms { get; set; }
 
+        public virtual ICollection<Sight> Sights { get; set; }
+
+        public virtual ICollection<Catering> Caterings { get; set; }
+
         public ApplicationUser()
         {
             Comments = new List<Comment>();
             ChatRooms = new List<ChatRoom>();
+            Caterings = new List<Catering>();
+            Sights = new List<Sight>();
         }
     }
 

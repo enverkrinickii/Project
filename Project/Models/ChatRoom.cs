@@ -20,5 +20,10 @@ namespace Project.Models
         public Picture Picture { get; set; }
 
         public virtual ICollection<ApplicationUser> Users { get; set; }
+
+        public ChatRoom()
+        {
+            Users = new List<ApplicationUser>();
+        }
     }
 }

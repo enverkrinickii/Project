@@ -30,13 +30,14 @@ namespace Project.Models
 
         public virtual ICollection<Dish> Dishes { get; set; }
 
+        public virtual ICollection<ApplicationUser> Users { get; set; }
+
         public Catering()
         {
             Tags = new List<Tag>();
             Pictures = new List<Picture>();
-
+            Users = new List<ApplicationUser>();
             Dishes = new List<Dish>();
-            
         }
     }
 }
