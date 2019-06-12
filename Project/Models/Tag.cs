@@ -11,11 +11,13 @@ namespace Project.Models
         [Required]
         public string Name { get; set; }
 
-        public virtual ICollection<Сatering> Сaterings { get; set; }
+        public virtual ICollection<Catering> Сaterings { get; set; }
+        public virtual ICollection<Sight> Sights { get; set; }
 
         public Tag()
         {
-            Сaterings = new List<Сatering>();
+            Сaterings = new List<Catering>();
+            Sights = new List<Sight>();
         }
     }
 }

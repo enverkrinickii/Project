@@ -20,12 +20,19 @@ namespace Project.Models
 
         public virtual ICollection<Comment> Comments { get; set; }
 
+        public virtual ICollection<ChatRoom> ChatRooms { get; set; }
+
+        public ApplicationUser()
+        {
+            Comments = new List<Comment>();
+            ChatRooms = new List<ChatRoom>();
+        }
     }
 
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
 
-        public DbSet<Сatering> Сaterings { get; set; }
+        public DbSet<Catering> Сaterings { get; set; }
         public DbSet<Picture> Pictures { get; set; }
         public DbSet<Comment> Comments { get; set; }
         public DbSet<Address> Addresses { get; set; }
@@ -33,6 +40,9 @@ namespace Project.Models
         public DbSet<Tag> Tags { get; set; }
         public DbSet<Ingredient> Ingredients { get; set; }
         public DbSet<Sight> Sights { get; set; }
+        public DbSet<ChatRoom> ChatRooms { get; set; }
+        public DbSet<Localization> Localizations { get; set; }
+        public DbSet<Message> Messages { get; set; }
 
         public ApplicationDbContext()
             : base("DefaultConnection", throwIfV1Schema: false)

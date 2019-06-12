@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Project.Models
 {
-    public class Сatering
+    public class Catering
     {
         [Key]
         public int CateringId { get; set; }
@@ -30,7 +30,7 @@ namespace Project.Models
 
         public virtual ICollection<Dish> Dishes { get; set; }
 
-        public Сatering()
+        public Catering()
         {
             Tags = new List<Tag>();
             Pictures = new List<Picture>();

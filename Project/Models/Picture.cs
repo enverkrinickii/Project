@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Project.Models
@@ -15,5 +16,18 @@ namespace Project.Models
         public int? ThumbnailId { get; set; }
         [ForeignKey("ThumbnailId")]
         public Picture ThumbnailPicture { get; set; }
+
+        public virtual ICollection<Dish> Dishes { get; set; }
+
+        public virtual ICollection<Sight> Sights { get; set; }
+
+        public virtual ICollection<Catering> Сaterings { get; set; }
+
+        public Picture()
+        {
+            Dishes = new List<Dish>();
+            Sights = new List<Sight>();
+            Сaterings = new List<Catering>();
+        }
     }
 }

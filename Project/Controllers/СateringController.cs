@@ -18,16 +18,16 @@ namespace Project.Controllers
         private ApplicationDbContext db = new ApplicationDbContext();
 
         // GET: api/Сatering
-        public IQueryable<Сatering> GetСaterings()
+        public IQueryable<Catering> GetСaterings()
         {
             return db.Сaterings;
         }
 
         // GET: api/Сatering/5
-        [ResponseType(typeof(Сatering))]
+        [ResponseType(typeof(Catering))]
         public async Task<IHttpActionResult> GetСatering(int id)
         {
-            Сatering сatering = await db.Сaterings.FindAsync(id);
+            Catering сatering = await db.Сaterings.FindAsync(id);
             if (сatering == null)
             {
                 return NotFound();
@@ -38,7 +38,7 @@ namespace Project.Controllers
 
         // PUT: api/Сatering/5
         [ResponseType(typeof(void))]
-        public async Task<IHttpActionResult> PutСatering(int id, Сatering сatering)
+        public async Task<IHttpActionResult> PutСatering(int id, Catering сatering)
         {
             if (!ModelState.IsValid)
             {
@@ -72,8 +72,8 @@ namespace Project.Controllers
         }
 
         // POST: api/Сatering
-        [ResponseType(typeof(Сatering))]
-        public async Task<IHttpActionResult> PostСatering(Сatering сatering)
+        [ResponseType(typeof(Catering))]
+        public async Task<IHttpActionResult> PostСatering(Catering сatering)
         {
             if (!ModelState.IsValid)
             {
@@ -87,10 +87,10 @@ namespace Project.Controllers
         }
 
         // DELETE: api/Сatering/5
-        [ResponseType(typeof(Сatering))]
+        [ResponseType(typeof(Catering))]
         public async Task<IHttpActionResult> DeleteСatering(int id)
         {
-            Сatering сatering = await db.Сaterings.FindAsync(id);
+            Catering сatering = await db.Сaterings.FindAsync(id);
             if (сatering == null)
             {
                 return NotFound();
