@@ -40,7 +40,7 @@ namespace Project.Migrations
                         PictureId = c.Int(nullable: false, identity: true),
                         ImageUrl = c.String(),
                         ImageBytes = c.Binary(),
-                        ThumbnailId = c.Int(),
+                        ThumbnailId = c.Int(nullable:true),
                     })
                 .PrimaryKey(t => t.PictureId)
                 .ForeignKey("dbo.Pictures", t => t.ThumbnailId)
@@ -51,14 +51,17 @@ namespace Project.Migrations
                 c => new
                     {
                         DishId = c.Int(nullable: false, identity: true),
-                        Name = c.String(nullable: false),
-                        Description = c.String(),
+                        TitleKey = c.String(nullable: false, maxLength: 256),
+                        DescriptionKey = c.String(nullable: false, maxLength: 256),
                         Weight = c.Int(nullable: false),
                         Price = c.Decimal(nullable: false, precision: 18, scale: 2),
+                        Discriminator = c.String(nullable: false, maxLength: 128),
                         Catering_CateringId = c.Int(),
                     })
                 .PrimaryKey(t => t.DishId)
                 .ForeignKey("dbo.Caterings", t => t.Catering_CateringId)
+                .Index(t => t.TitleKey, unique: true, name: "TitleKeyIndex")
+                .Index(t => t.DescriptionKey, unique: true, name: "DescriptionKeyIndex")
                 .Index(t => t.Catering_CateringId);
             
             CreateTable(
@@ -66,22 +69,27 @@ namespace Project.Migrations
                 c => new
                     {
                         IngredientId = c.String(nullable: false, maxLength: 128),
-                        Name = c.String(nullable: false),
+                        NameKey = c.String(nullable: false, maxLength: 256),
+                        Discriminator = c.String(nullable: false, maxLength: 128),
                     })
-                .PrimaryKey(t => t.IngredientId);
+                .PrimaryKey(t => t.IngredientId)
+                .Index(t => t.NameKey, unique: true, name: "NameKeyIndex");
             
             CreateTable(
                 "dbo.Sights",
                 c => new
                     {
                         SightId = c.Int(nullable: false, identity: true),
-                        Name = c.String(nullable: false),
-                        Description = c.String(nullable: false),
-                        Rating = c.Double(nullable: false),
+                        TitleKey = c.String(nullable: false, maxLength: 256),
+                        DescriptionKey = c.String(nullable: false, maxLength: 256),
+                        Rating = c.Int(nullable: false),
                         AddressId = c.Int(nullable: false),
+                        Discriminator = c.String(nullable: false, maxLength: 128),
                     })
                 .PrimaryKey(t => t.SightId)
                 .ForeignKey("dbo.Addresses", t => t.AddressId, cascadeDelete: true)
+                .Index(t => t.TitleKey, unique: true, name: "TitleKeyIndex")
+                .Index(t => t.DescriptionKey, unique: true, name: "DescriptionKeyIndex")
                 .Index(t => t.AddressId);
             
             CreateTable(
@@ -89,22 +97,26 @@ namespace Project.Migrations
                 c => new
                     {
                         TagId = c.Int(nullable: false, identity: true),
-                        Name = c.String(nullable: false),
+                        Name = c.String(nullable: false, maxLength: 256),
                     })
-                .PrimaryKey(t => t.TagId);
+                .PrimaryKey(t => t.TagId)
+                .Index(t => t.Name, unique: true, name: "NameIndex");
             
             CreateTable(
                 "dbo.Caterings",
                 c => new
                     {
                         CateringId = c.Int(nullable: false, identity: true),
-                        Name = c.String(nullable: false),
-                        Description = c.String(nullable: false),
+                        TitleKey = c.String(nullable: false, maxLength: 256),
+                        DescriptionKey = c.String(nullable: false, maxLength: 256),
                         Rating = c.Int(nullable: false),
                         AddressId = c.Int(nullable: false),
+                        Discriminator = c.String(nullable: false, maxLength: 128),
                     })
                 .PrimaryKey(t => t.CateringId)
                 .ForeignKey("dbo.Addresses", t => t.AddressId, cascadeDelete: true)
+                .Index(t => t.TitleKey, unique: true, name: "TitleKeyIndex")
+                .Index(t => t.DescriptionKey, unique: true, name: "DescriptionKeyIndex")
                 .Index(t => t.AddressId);
             
             CreateTable(
@@ -185,7 +197,7 @@ namespace Project.Migrations
                 c => new
                     {
                         Id = c.Int(nullable: false, identity: true),
-                        Key = c.String(nullable: false),
+                        Key = c.String(nullable: false, maxLength: 256),
                         Value = c.String(nullable: false),
                         Culture = c.String(nullable: false),
                     })
@@ -217,17 +229,17 @@ namespace Project.Migrations
                 .Index(t => t.Name, unique: true, name: "RoleNameIndex");
             
             CreateTable(
-                "dbo.IngredientDishes",
+                "dbo.DishIngredients",
                 c => new
                     {
-                        Ingredient_IngredientId = c.String(nullable: false, maxLength: 128),
                         Dish_DishId = c.Int(nullable: false),
+                        Ingredient_IngredientId = c.String(nullable: false, maxLength: 128),
                     })
-                .PrimaryKey(t => new { t.Ingredient_IngredientId, t.Dish_DishId })
-                .ForeignKey("dbo.Ingredients", t => t.Ingredient_IngredientId, cascadeDelete: true)
+                .PrimaryKey(t => new { t.Dish_DishId, t.Ingredient_IngredientId, })
                 .ForeignKey("dbo.Dishes", t => t.Dish_DishId, cascadeDelete: true)
-                .Index(t => t.Ingredient_IngredientId)
-                .Index(t => t.Dish_DishId);
+                .ForeignKey("dbo.Ingredients", t => t.Ingredient_IngredientId, cascadeDelete: true)
+                .Index(t => t.Dish_DishId)
+                .Index(t => t.Ingredient_IngredientId);
             
             CreateTable(
                 "dbo.DishPictures",
@@ -256,18 +268,18 @@ namespace Project.Migrations
                 .Index(t => t.Picture_PictureId);
             
             CreateTable(
-                "dbo.TagSights",
+                "dbo.SightTags",
                 c => new
                     {
-                        Tag_TagId = c.Int(nullable: false),
                         Sight_SightId = c.Int(nullable: false),
+                        Tag_TagId = c.Int(nullable: false),
                     })
-                .PrimaryKey(t => new { t.Tag_TagId, t.Sight_SightId })
-                .ForeignKey("dbo.Tags", t => t.Tag_TagId, cascadeDelete: true)
+                .PrimaryKey(t => new { t.Sight_SightId, t.Tag_TagId, })
                 .ForeignKey("dbo.Sights", t => t.Sight_SightId, cascadeDelete: true)
-                .Index(t => t.Tag_TagId)
-                .Index(t => t.Sight_SightId);
-            
+                .ForeignKey("dbo.Tags", t => t.Tag_TagId, cascadeDelete: true)
+                .Index(t => t.Sight_SightId)
+                .Index(t => t.Tag_TagId);
+
             CreateTable(
                 "dbo.CateringPictures",
                 c => new
@@ -295,6 +307,19 @@ namespace Project.Migrations
                 .Index(t => t.Tag_TagId);
             
             CreateTable(
+                "dbo.ApplicationUserCaterings",
+                c => new
+                    {
+                        ApplicationUser_Id = c.String(nullable: false, maxLength: 128),
+                        Catering_CateringId = c.Int(nullable: false),
+                    })
+                .PrimaryKey(t => new { t.ApplicationUser_Id, t.Catering_CateringId })
+                .ForeignKey("dbo.AspNetUsers", t => t.ApplicationUser_Id, cascadeDelete: true)
+                .ForeignKey("dbo.Caterings", t => t.Catering_CateringId, cascadeDelete: true)
+                .Index(t => t.ApplicationUser_Id)
+                .Index(t => t.Catering_CateringId);
+            
+            CreateTable(
                 "dbo.ApplicationUserChatRooms",
                 c => new
                     {
@@ -307,6 +332,19 @@ namespace Project.Migrations
                 .Index(t => t.ApplicationUser_Id)
                 .Index(t => t.ChatRoom_ChatRoomId);
             
+            CreateTable(
+                "dbo.ApplicationUserSights",
+                c => new
+                    {
+                        ApplicationUser_Id = c.String(nullable: false, maxLength: 128),
+                        Sight_SightId = c.Int(nullable: false),
+                    })
+                .PrimaryKey(t => new { t.ApplicationUser_Id, t.Sight_SightId })
+                .ForeignKey("dbo.AspNetUsers", t => t.ApplicationUser_Id, cascadeDelete: true)
+                .ForeignKey("dbo.Sights", t => t.Sight_SightId, cascadeDelete: true)
+                .Index(t => t.ApplicationUser_Id)
+                .Index(t => t.Sight_SightId);
+            
         }
         
         public override void Down()
@@ -314,6 +352,10 @@ namespace Project.Migrations
             DropForeignKey("dbo.AspNetUserRoles", "RoleId", "dbo.AspNetRoles");
             DropForeignKey("dbo.Messages", "UserId", "dbo.AspNetUsers");
             DropForeignKey("dbo.Messages", "ChatRoomId", "dbo.ChatRooms");
+            DropForeignKey("dbo.ChatRooms", "PictureId", "dbo.Pictures");
+            DropForeignKey("dbo.Pictures", "ThumbnailId", "dbo.Pictures");
+            DropForeignKey("dbo.ApplicationUserSights", "Sight_SightId", "dbo.Sights");
+            DropForeignKey("dbo.ApplicationUserSights", "ApplicationUser_Id", "dbo.AspNetUsers");
             DropForeignKey("dbo.AspNetUserRoles", "UserId", "dbo.AspNetUsers");
             DropForeignKey("dbo.AspNetUserLogins", "UserId", "dbo.AspNetUsers");
             DropForeignKey("dbo.Comments", "UserId", "dbo.AspNetUsers");
@@ -321,8 +363,8 @@ namespace Project.Migrations
             DropForeignKey("dbo.AspNetUserClaims", "UserId", "dbo.AspNetUsers");
             DropForeignKey("dbo.ApplicationUserChatRooms", "ChatRoom_ChatRoomId", "dbo.ChatRooms");
             DropForeignKey("dbo.ApplicationUserChatRooms", "ApplicationUser_Id", "dbo.AspNetUsers");
-            DropForeignKey("dbo.ChatRooms", "PictureId", "dbo.Pictures");
-            DropForeignKey("dbo.Pictures", "ThumbnailId", "dbo.Pictures");
+            DropForeignKey("dbo.ApplicationUserCaterings", "Catering_CateringId", "dbo.Caterings");
+            DropForeignKey("dbo.ApplicationUserCaterings", "ApplicationUser_Id", "dbo.AspNetUsers");
             DropForeignKey("dbo.CateringTags", "Tag_TagId", "dbo.Tags");
             DropForeignKey("dbo.CateringTags", "Catering_CateringId", "dbo.Caterings");
             DropForeignKey("dbo.CateringPictures", "Picture_PictureId", "dbo.Pictures");
@@ -338,8 +380,12 @@ namespace Project.Migrations
             DropForeignKey("dbo.DishPictures", "Dish_DishId", "dbo.Dishes");
             DropForeignKey("dbo.IngredientDishes", "Dish_DishId", "dbo.Dishes");
             DropForeignKey("dbo.IngredientDishes", "Ingredient_IngredientId", "dbo.Ingredients");
+            DropIndex("dbo.ApplicationUserSights", new[] { "Sight_SightId" });
+            DropIndex("dbo.ApplicationUserSights", new[] { "ApplicationUser_Id" });
             DropIndex("dbo.ApplicationUserChatRooms", new[] { "ChatRoom_ChatRoomId" });
             DropIndex("dbo.ApplicationUserChatRooms", new[] { "ApplicationUser_Id" });
+            DropIndex("dbo.ApplicationUserCaterings", new[] { "Catering_CateringId" });
+            DropIndex("dbo.ApplicationUserCaterings", new[] { "ApplicationUser_Id" });
             DropIndex("dbo.CateringTags", new[] { "Tag_TagId" });
             DropIndex("dbo.CateringTags", new[] { "Catering_CateringId" });
             DropIndex("dbo.CateringPictures", new[] { "Picture_PictureId" });
@@ -363,11 +409,21 @@ namespace Project.Migrations
             DropIndex("dbo.AspNetUserClaims", new[] { "UserId" });
             DropIndex("dbo.AspNetUsers", "UserNameIndex");
             DropIndex("dbo.Caterings", new[] { "AddressId" });
+            DropIndex("dbo.Caterings", "DescriptionKeyIndex");
+            DropIndex("dbo.Caterings", "TitleKeyIndex");
+            DropIndex("dbo.Tags", "NameIndex");
             DropIndex("dbo.Sights", new[] { "AddressId" });
+            DropIndex("dbo.Sights", "DescriptionKeyIndex");
+            DropIndex("dbo.Sights", "TitleKeyIndex");
+            DropIndex("dbo.Ingredients", "NameKeyIndex");
             DropIndex("dbo.Dishes", new[] { "Catering_CateringId" });
+            DropIndex("dbo.Dishes", "DescriptionKeyIndex");
+            DropIndex("dbo.Dishes", "TitleKeyIndex");
             DropIndex("dbo.Pictures", new[] { "ThumbnailId" });
             DropIndex("dbo.ChatRooms", new[] { "PictureId" });
+            DropTable("dbo.ApplicationUserSights");
             DropTable("dbo.ApplicationUserChatRooms");
+            DropTable("dbo.ApplicationUserCaterings");
             DropTable("dbo.CateringTags");
             DropTable("dbo.CateringPictures");
             DropTable("dbo.TagSights");

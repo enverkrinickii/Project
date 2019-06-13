@@ -27,7 +27,7 @@ namespace Project.Controllers
         [ResponseType(typeof(Picture))]
         public async Task<IHttpActionResult> GetPicture(int id)
         {
-            Picture picture = await db.Pictures.FindAsync(id);
+            var picture = await db.Pictures.FindAsync(id);
             if (picture == null)
             {
                 return NotFound();
@@ -90,7 +90,7 @@ namespace Project.Controllers
         [ResponseType(typeof(Picture))]
         public async Task<IHttpActionResult> DeletePicture(int id)
         {
-            Picture picture = await db.Pictures.FindAsync(id);
+            var picture = await db.Pictures.FindAsync(id);
             if (picture == null)
             {
                 return NotFound();

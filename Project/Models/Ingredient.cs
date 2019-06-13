@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Project.Models
 {
@@ -9,6 +10,7 @@ namespace Project.Models
         public string IngredientId { get; set; }
 
         [Required]
+        [Index("NameKeyIndex", IsUnique = true)]
         public string NameKey { get; set; }
 
         public virtual ICollection<Dish> Dishes { get; set; }

@@ -27,7 +27,7 @@ namespace Project.Controllers
         [ResponseType(typeof(Tag))]
         public async Task<IHttpActionResult> GetTag(int id)
         {
-            Tag tag = await db.Tags.FindAsync(id);
+            var tag = await db.Tags.FindAsync(id);
             if (tag == null)
             {
                 return NotFound();
@@ -90,7 +90,7 @@ namespace Project.Controllers
         [ResponseType(typeof(Tag))]
         public async Task<IHttpActionResult> DeleteTag(int id)
         {
-            Tag tag = await db.Tags.FindAsync(id);
+            var tag = await db.Tags.FindAsync(id);
             if (tag == null)
             {
                 return NotFound();

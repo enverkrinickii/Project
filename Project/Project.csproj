@@ -245,9 +245,9 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201906122032391_Init-migration.cs" />
-    <Compile Include="Migrations\201906122032391_Init-migration.Designer.cs">
-      <DependentUpon>201906122032391_Init-migration.cs</DependentUpon>
+    <Compile Include="Migrations\201906130759430_MigrateDB.cs" />
+    <Compile Include="Migrations\201906130759430_MigrateDB.Designer.cs">
+      <DependentUpon>201906130759430_MigrateDB.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountBindingModels.cs" />
@@ -262,9 +262,14 @@
     <Compile Include="Models\Localization.cs" />
     <Compile Include="Models\Message.cs" />
     <Compile Include="Models\Picture.cs" />
+    <Compile Include="Models\Place.cs" />
     <Compile Include="Models\Sight.cs" />
     <Compile Include="Models\Tag.cs" />
     <Compile Include="Models\Catering.cs" />
+    <Compile Include="Models\ViewModels\CateringViewModel.cs" />
+    <Compile Include="Models\ViewModels\DishViewModel.cs" />
+    <Compile Include="Models\ViewModels\IngredientViewModel.cs" />
+    <Compile Include="Models\ViewModels\SightViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Providers\ApplicationOAuthProvider.cs" />
     <Compile Include="Results\ChallengeResult.cs" />
@@ -362,8 +367,8 @@
     <Content Include="Scripts\jquery-3.3.1.min.map" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201906122032391_Init-migration.resx">
-      <DependentUpon>201906122032391_Init-migration.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201906130759430_MigrateDB.resx">
+      <DependentUpon>201906130759430_MigrateDB.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

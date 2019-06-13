@@ -64,7 +64,7 @@ namespace Project.Controllers
                 return BadRequest(ModelState);
             }
 
-            if (id != sightViewModel.SigthId)
+            if (id != sightViewModel.SightId)
             {
                 return BadRequest();
             }
@@ -166,9 +166,9 @@ namespace Project.Controllers
             _db.Sights.Add(sight);
             await _db.SaveChangesAsync();
 
-            sightViewModel.SigthId = sight.SigthId;
+            sightViewModel.SightId = sight.SightId;
 
-            return CreatedAtRoute("DefaultApi", new { id = sightViewModel.SigthId }, sightViewModel);
+            return CreatedAtRoute("DefaultApi", new { id = sightViewModel.SightId }, sightViewModel);
         }
 
         // DELETE: api/Sights/5
@@ -211,7 +211,7 @@ namespace Project.Controllers
 
         private bool SightExists(int id)
         {
-            return _db.Sights.Count(e => e.SigthId == id) > 0;
+            return _db.Sights.Count(e => e.SightId == id) > 0;
         }
     }
 }

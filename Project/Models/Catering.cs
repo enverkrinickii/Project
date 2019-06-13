@@ -7,6 +7,9 @@ namespace Project.Models
     public class Catering : Place
     {
 
+        [Key]
+        public int CateringId { get; set; }
+
         public virtual ICollection<Dish> Dishes { get; set; }
 
         public Catering()

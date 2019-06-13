@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Project.Models
 {
@@ -9,8 +10,11 @@ namespace Project.Models
         public int DishId { get; set; }
 
         [Required]
+        [Index("TitleKeyIndex", IsUnique = true)]
         public string TitleKey { get; set; }
 
+        [Required]
+        [Index("DescriptionKeyIndex", IsUnique = true)]
         public string DescriptionKey { get; set; }
 
         [Required]

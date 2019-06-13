@@ -9,14 +9,12 @@ namespace Project.Models
 {
     public class Place
     {
-
-        [Key]
-        public int CateringId { get; set; }
-
         [Required]
+        [Index("TitleKeyIndex", IsUnique = true)]
         public string TitleKey { get; set; }
 
         [Required]
+        [Index("DescriptionKeyIndex", IsUnique = true)]
         public string DescriptionKey { get; set; }
 
         [Required]
@@ -31,7 +29,6 @@ namespace Project.Models
         public virtual ICollection<Tag> Tags { get; set; }
 
         public virtual ICollection<Picture> Pictures { get; set; }
-
 
         public virtual ICollection<ApplicationUser> Users { get; set; }
     }

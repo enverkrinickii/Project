@@ -8,7 +8,7 @@ namespace Project.Models
     {
 
         [Key]
-        public int SigthId { get; set; }
+        public int SightId { get; set; }
 
         public Sight()
         {

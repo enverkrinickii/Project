@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Project.Models
 {
@@ -9,6 +10,7 @@ namespace Project.Models
         public int TagId { get; set; }
 
         [Required]
+        [Index("NameIndex", IsUnique = true)]
         public string Name { get; set; }
 
         public virtual ICollection<Catering> Сaterings { get; set; }
