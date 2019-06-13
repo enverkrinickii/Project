@@ -9,9 +9,9 @@ namespace Project.Models
         public int DishId { get; set; }
 
         [Required]
-        public string Name { get; set; }
+        public string TitleKey { get; set; }
 
-        public string Description { get; set; }
+        public string DescriptionKey { get; set; }
 
         [Required]
         public int Weight { get; set; }

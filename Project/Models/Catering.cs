@@ -4,33 +4,10 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Project.Models
 {
-    public class Catering
+    public class Catering : Place
     {
-        [Key]
-        public int CateringId { get; set; }
-
-        [Required]
-        public string Name { get; set; }
-
-        [Required]
-        public string Description { get; set; }
-
-        [Required]
-        public int Rating { get; set; }
-
-        [Required]
-        public int? AddressId { get; set; }
-
-        [ForeignKey("AddressId")]
-        public Address Address { get; set; }
-
-        public virtual ICollection<Tag> Tags { get; set; }
-
-        public virtual ICollection<Picture> Pictures { get; set; }
 
         public virtual ICollection<Dish> Dishes { get; set; }
-
-        public virtual ICollection<ApplicationUser> Users { get; set; }
 
         public Catering()
         {

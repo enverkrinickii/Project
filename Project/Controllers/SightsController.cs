@@ -10,51 +10,113 @@ using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
 using Project.Models;
+using Project.Models.ViewModels;
 
 namespace Project.Controllers
 {
     public class SightsController : ApiController
     {
-        private ApplicationDbContext db = new ApplicationDbContext();
+        private ApplicationDbContext _db = new ApplicationDbContext();
 
         // GET: api/Sights
-        public IQueryable<Sight> GetSights()
+        public IEnumerable<SightViewModel> GetSights(string language)
         {
-            return db.Sights;
+            var sights = new List<SightViewModel>();
+
+            foreach (var sight in _db.Sights)
+            {
+                var sightViewModel = (SightViewModel)sight;
+                sightViewModel.Title = _db.Localizations.FirstOrDefault(x => x.Key == sight.TitleKey && x.Culture == language)?
+                    .Value;
+                sightViewModel.Description = _db.Localizations.FirstOrDefault(x => x.Key == sight.DescriptionKey && x.Culture == language)?
+                    .Value;
+                sights.Add(sightViewModel);
+            }
+
+            return sights;
         }
 
         // GET: api/Sights/5
-        [ResponseType(typeof(Sight))]
-        public async Task<IHttpActionResult> GetSight(int id)
+        [ResponseType(typeof(SightViewModel))]
+        public async Task<IHttpActionResult> GetSight(int id, string language)
         {
-            Sight sight = await db.Sights.FindAsync(id);
+            var sight = await _db.Sights.FindAsync(id);
             if (sight == null)
             {
                 return NotFound();
             }
 
-            return Ok(sight);
+            var sightViewModel = (SightViewModel)sight;
+            sightViewModel.Title = _db.Localizations.FirstOrDefault(x => x.Key == sight.TitleKey && x.Culture == language)?
+                .Value;
+            sightViewModel.Description = _db.Localizations.FirstOrDefault(x => x.Key == sight.DescriptionKey && x.Culture == language)?
+                .Value;
+
+            return Ok(sightViewModel);
         }
 
         // PUT: api/Sights/5
         [ResponseType(typeof(void))]
-        public async Task<IHttpActionResult> PutSight(int id, Sight sight)
+        public async Task<IHttpActionResult> PutSight(int id, SightViewModel sightViewModel, string language)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if (id != sight.SightId)
+            if (id != sightViewModel.SigthId)
             {
                 return BadRequest();
             }
 
-            db.Entry(sight).State = EntityState.Modified;
+            var sight = (Sight)sightViewModel;
+
+            var title = _db.Localizations.FirstOrDefault(x => x.Key == sight.TitleKey && x.Culture == language);
+
+            var description =
+                _db.Localizations.FirstOrDefault(x => x.Key == sight.DescriptionKey && x.Culture == language);
+
+            if (description == null)
+            {
+                description = new Localization
+                {
+                    Value = sightViewModel.Description,
+                    Key = sightViewModel.DescriptionKey,
+                    Culture = language,
+                };
+                _db.Localizations.Add(description);
+            }
+            else
+            {
+                if (description.Value != sightViewModel.Description)
+                {
+                    _db.Entry(description).State = EntityState.Modified;
+                }
+            }
+
+            if (title == null)
+            {
+                title = new Localization
+                {
+                    Value = sightViewModel.Title,
+                    Key = sightViewModel.TitleKey,
+                    Culture = language,
+                };
+                _db.Localizations.Add(title);
+            }
+            else
+            {
+                if (title.Value != sightViewModel.Title)
+                {
+                    _db.Entry(title).State = EntityState.Modified;
+                }
+            }
+
+            _db.Entry(sight).State = EntityState.Modified;
 
             try
             {
-                await db.SaveChangesAsync();
+                await _db.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -72,32 +134,68 @@ namespace Project.Controllers
         }
 
         // POST: api/Sights
-        [ResponseType(typeof(Sight))]
-        public async Task<IHttpActionResult> PostSight(Sight sight)
+        [ResponseType(typeof(SightViewModel))]
+        public async Task<IHttpActionResult> PostSight(SightViewModel sightViewModel, string language)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            db.Sights.Add(sight);
-            await db.SaveChangesAsync();
+            var sight = (Sight)sightViewModel;
 
-            return CreatedAtRoute("DefaultApi", new { id = sight.SightId }, sight);
+            sight.TitleKey = Guid.NewGuid().ToString() + nameof(sightViewModel.Title);
+            sight.DescriptionKey = Guid.NewGuid().ToString() + nameof(sightViewModel.Description);
+
+            var description = new Localization
+            {
+                Value = sightViewModel.Description,
+                Key = sightViewModel.DescriptionKey,
+                Culture = language,
+            };
+            _db.Localizations.Add(description);
+
+            var title = new Localization
+            {
+                Value = sightViewModel.Title,
+                Key = sightViewModel.TitleKey,
+                Culture = language,
+            };
+            _db.Localizations.Add(title);
+
+            _db.Sights.Add(sight);
+            await _db.SaveChangesAsync();
+
+            sightViewModel.SigthId = sight.SigthId;
+
+            return CreatedAtRoute("DefaultApi", new { id = sightViewModel.SigthId }, sightViewModel);
         }
 
         // DELETE: api/Sights/5
-        [ResponseType(typeof(Sight))]
+        [ResponseType(typeof(SightViewModel))]
         public async Task<IHttpActionResult> DeleteSight(int id)
         {
-            Sight sight = await db.Sights.FindAsync(id);
+            var sight = await _db.Sights.FindAsync(id);
             if (sight == null)
             {
                 return NotFound();
             }
 
-            db.Sights.Remove(sight);
-            await db.SaveChangesAsync();
+            var titles = _db.Localizations.Where(x => x.Key == sight.TitleKey);
+            var descriptions = _db.Localizations.Where(x => x.Key == sight.DescriptionKey);
+
+            if (titles.Any())
+            {
+                _db.Localizations.RemoveRange(titles);
+            }
+
+            if (descriptions.Any())
+            {
+                _db.Localizations.RemoveRange(descriptions);
+            }
+
+            _db.Sights.Remove(sight);
+            await _db.SaveChangesAsync();
 
             return Ok(sight);
         }
@@ -106,14 +204,14 @@ namespace Project.Controllers
         {
             if (disposing)
             {
-                db.Dispose();
+                _db.Dispose();
             }
             base.Dispose(disposing);
         }
 
         private bool SightExists(int id)
         {
-            return db.Sights.Count(e => e.SightId == id) > 0;
+            return _db.Sights.Count(e => e.SigthId == id) > 0;
         }
     }
 }

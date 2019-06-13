@@ -9,7 +9,7 @@ namespace Project.Models
         public string IngredientId { get; set; }
 
         [Required]
-        public string Name { get; set; }
+        public string NameKey { get; set; }
 
         public virtual ICollection<Dish> Dishes { get; set; }
 

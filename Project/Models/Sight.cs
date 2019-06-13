@@ -4,33 +4,11 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Project.Models
 {
-    public class Sight
+    public class Sight : Place
     {
+
         [Key]
-        public int SightId { get; set; }
-
-
-        [Required]
-        public string Name { get; set; }
-
-        [Required]
-        public string Description { get; set; }
-
-        [Required]
-        public double Rating { get; set; }
-
-        [Required]
-        public int? AddressId { get; set; }
-
-        [ForeignKey("AddressId")]
-        public Address Address { get; set; }
-
-        public virtual ICollection<Tag> Tags { get; set; }
-
-        public virtual ICollection<Picture> Pictures { get; set; }
-
-        public virtual ICollection<ApplicationUser> Users { get; set; }
-
+        public int SigthId { get; set; }
 
         public Sight()
         {
